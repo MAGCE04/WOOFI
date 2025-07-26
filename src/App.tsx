@@ -7,7 +7,6 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  BackpackWalletAdapter,
   BraveWalletAdapter,
   CoinbaseWalletAdapter,
   SlopeWalletAdapter,
@@ -31,7 +30,6 @@ function App() {
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
-    new BackpackWalletAdapter(),
     new BraveWalletAdapter(),
     new CoinbaseWalletAdapter(),
     new SlopeWalletAdapter(),
