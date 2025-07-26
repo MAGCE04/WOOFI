@@ -3,14 +3,11 @@ import {
   PublicKey, 
   Transaction, 
   SystemProgram, 
-  LAMPORTS_PER_SOL, 
-  TransactionInstruction 
+  LAMPORTS_PER_SOL,
+  clusterApiUrl
 } from '@solana/web3.js';
 import { WalletContextState } from '@solana/wallet-adapter-react';
 import { DONATION_CONFIG } from '../config/donation';
-
-// Program ID for the donation program
-const DONATION_PROGRAM_ID = new PublicKey('11111111111111111111111111111111'); // Replace with actual program ID after deployment
 
 export async function sendDonation(
   wallet: WalletContextState,
@@ -22,23 +19,19 @@ export async function sendDonation(
     throw new Error('Wallet not connected');
   }
 
-  const connection = new Connection(
-    tokenSymbol === 'SOL' 
-      ? `https://api.${DONATION_CONFIG.network}.solana.com` 
-      : `https://api.${DONATION_CONFIG.network}.solana.com`,
-    'confirmed'
-  );
+  // Use clusterApiUrl to get a reliable endpoint
+  const network = DONATION_CONFIG.network === 'mainnet-beta' ? 'mainnet-beta' : 'devnet';
+  const connection = new Connection(clusterApiUrl(network), 'confirmed');
 
   const recipientPublicKey = new PublicKey(DONATION_CONFIG.recipientWallet);
   
-  // For now, we'll implement a simple SOL transfer
-  // In a production app, you would use the donation_program for both SOL and tokens
+  // For SOL transfers
   if (tokenSymbol === 'SOL') {
     const transaction = new Transaction().add(
       SystemProgram.transfer({
         fromPubkey: wallet.publicKey,
         toPubkey: recipientPublicKey,
-        lamports: amount * LAMPORTS_PER_SOL
+        lamports: Math.round(amount * LAMPORTS_PER_SOL)
       })
     );
 
@@ -63,8 +56,13 @@ export async function sendDonation(
       throw error;
     }
   } else {
-    // For token transfers, we would use the token program
-    // This would be implemented with the donation_program in a production app
+    // For token transfers
+    const tokenConfig = DONATION_CONFIG.tokens[tokenSymbol as keyof typeof DONATION_CONFIG.tokens];
+    
+    if (!tokenConfig || !tokenConfig.mint) {
+      throw new Error(`Invalid token: ${tokenSymbol}`);
+    }
+    
     throw new Error(`Token donations for ${tokenSymbol} not yet implemented`);
   }
 }

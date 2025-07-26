@@ -5,6 +5,7 @@ import { X, Heart, Calendar, MapPin, Stethoscope, Gift, Wallet } from 'lucide-re
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { DONATION_CONFIG } from '../config/donation';
+import { sendDonation } from '../services/donationService';
 
 interface DogModalProps {
   dog: Dog | null;
@@ -12,24 +13,50 @@ interface DogModalProps {
 }
 
 export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
-  const { connected } = useWallet();
+  const wallet = useWallet();
+  const { connected } = wallet;
   const [selectedToken, setSelectedToken] = useState<'SOL' | 'USDC' | 'WOOFI'>('SOL');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [transactionSignature, setTransactionSignature] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   if (!dog) return null;
 
   const currentToken = DONATION_CONFIG.tokens[selectedToken];
 
-  const handleDonate = (amount: number) => {
+  const handleDonate = async (amount: number) => {
     if (DONATION_CONFIG.recipientWallet === 'YOUR_WALLET_ADDRESS_HERE') {
       alert('Please configure the donation wallet address in src/config/donation.ts');
       return;
     }
     
-    // In a real implementation, this would initiate a Solana transaction
-    console.log(`Donating ${amount} ${selectedToken} to ${dog.name}`);
-    console.log(`Recipient wallet: ${DONATION_CONFIG.recipientWallet}`);
-    console.log(`Token mint: ${currentToken.mint || 'Native SOL'}`);
-    alert(`Donation of ${amount} ${selectedToken} initiated for ${dog.name}!\nRecipient: ${DONATION_CONFIG.recipientWallet}`);
+    if (!wallet.publicKey || !wallet.signTransaction) {
+      setError('Wallet not connected');
+      return;
+    }
+    
+    setIsProcessing(true);
+    setError(null);
+    setTransactionSignature(null);
+    
+    try {
+      console.log(`Initiating donation of ${amount} ${selectedToken} to ${dog.name}`);
+      
+      const signature = await sendDonation(
+        wallet,
+        dog.id,
+        amount,
+        selectedToken
+      );
+      
+      setTransactionSignature(signature);
+      console.log('Donation successful:', signature);
+    } catch (err) {
+      console.error('Donation failed:', err);
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -177,19 +204,45 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
                           <button 
                             key={amount}
                             onClick={() => handleDonate(amount)}
+                            disabled={isProcessing}
                             className={`rounded-lg py-3 px-4 font-semibold transition-all duration-200 ${
+                              isProcessing ? 'opacity-50 cursor-not-allowed' : ''
+                            } ${
                               index >= 2
                                 ? 'bg-orange-600 hover:bg-orange-700 text-white'
                                 : 'bg-white hover:bg-orange-50 border-2 border-orange-200 hover:border-orange-300 text-orange-700'
                             }`}
                           >
-                            {amount} {selectedToken}
+                            {isProcessing ? 'Processing...' : `${amount} ${selectedToken}`}
                           </button>
                         ))}
                       </div>
-                      <button className="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 text-white font-semibold py-3 rounded-lg transition-all duration-200">
-                        Custom Amount
-                      </button>
+                      
+                      {/* Transaction Result */}
+                      {transactionSignature && (
+                        <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                          <p className="font-bold">Donation Successful!</p>
+                          <p className="text-sm break-all">
+                            Transaction: {transactionSignature}
+                          </p>
+                          <a 
+                            href={`https://explorer.solana.com/tx/${transactionSignature}?cluster=${DONATION_CONFIG.network}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 hover:underline"
+                          >
+                            View on Solana Explorer
+                          </a>
+                        </div>
+                      )}
+                      
+                      {/* Error Message */}
+                      {error && (
+                        <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                          <p className="font-bold">Error</p>
+                          <p>{error}</p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
