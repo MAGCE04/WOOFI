@@ -7,18 +7,14 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
   PhantomWalletAdapter,
   SolflareWalletAdapter,
-  CoinbaseWalletAdapter,
-  SlopeWalletAdapter,
-  TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
-import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { clusterApiUrl } from '@solana/web3.js';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
 import '@solana/wallet-adapter-react-ui/styles.css';
 import { DONATION_CONFIG } from './config/donation';
 
-// Main App Component
 function App() {
   const network = DONATION_CONFIG.network === 'mainnet-beta' 
     ? WalletAdapterNetwork.Mainnet 
@@ -29,9 +25,6 @@ function App() {
   const wallets = [
     new PhantomWalletAdapter(),
     new SolflareWalletAdapter(),
-    new CoinbaseWalletAdapter(),
-    new SlopeWalletAdapter(),
-    new TorusWalletAdapter(),
   ];
 
   return (

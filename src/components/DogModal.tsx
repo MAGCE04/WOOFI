@@ -1,7 +1,6 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Dog } from '../types/dog';
-import { X, Heart, Calendar, MapPin, Stethoscope, Gift, Wallet } from 'lucide-react';
+import { X, Heart, Calendar, Stethoscope, Gift, Wallet } from 'lucide-react';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { DONATION_CONFIG } from '../config/donation';
@@ -15,14 +14,12 @@ interface DogModalProps {
 export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
   const wallet = useWallet();
   const { connected } = wallet;
-  const [selectedToken, setSelectedToken] = useState<'SOL' | 'USDC' | 'WOOFI'>('SOL');
+  const [selectedToken, setSelectedToken] = useState<'SOL' | 'USDC'>('SOL');
   const [isProcessing, setIsProcessing] = useState(false);
   const [transactionSignature, setTransactionSignature] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   if (!dog) return null;
-
-  const currentToken = DONATION_CONFIG.tokens[selectedToken];
 
   const handleDonate = async (amount: number) => {
     if (DONATION_CONFIG.recipientWallet === 'YOUR_WALLET_ADDRESS_HERE') {
@@ -55,13 +52,10 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
       setTransactionSignature(signature);
       console.log('Donation successful! Transaction signature:', signature);
       
-      // Optional: Show success message
-      alert(`Donation of ${amount} ${selectedToken} successful!\nTransaction: ${signature}`);
     } catch (err) {
       console.error('Donation failed:', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
       
-      // Show user-friendly error
       if (err instanceof Error && err.message.includes('insufficient funds')) {
         setError('Insufficient funds in your wallet');
       } else if (err instanceof Error && err.message.includes('User rejected')) {
@@ -71,6 +65,10 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
       setIsProcessing(false);
     }
   };
+
+  const donationAmounts = selectedToken === 'SOL' 
+    ? DONATION_CONFIG.tokens.SOL.defaultAmounts 
+    : DONATION_CONFIG.tokens.USDC.defaultAmounts;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -150,7 +148,7 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
               {dog.specialNeeds.length > 0 && (
                 <div>
                   <h3 className="text-xl font-semibold mb-3 flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-purple-500" />
+                    <Stethoscope className="w-5 h-5 text-purple-500" />
                     Special Needs
                   </h3>
                   <ul className="space-y-1">
@@ -191,29 +189,36 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
                       <WalletMultiButton className="!bg-orange-600 hover:!bg-orange-700" />
                     </div>
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <div className="space-y-3">
                         <p className="text-sm text-gray-600 text-center">Select donation token</p>
                         <div className="flex gap-2">
-                          {Object.entries(DONATION_CONFIG.tokens).map(([key, token]) => (
-                            <button
-                              key={key}
-                              onClick={() => setSelectedToken(key as 'SOL' | 'USDC' | 'WOOFI')}
-                              className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
-                                selectedToken === key
-                                  ? 'bg-orange-600 text-white'
-                                  : 'bg-white border-2 border-orange-200 text-orange-700 hover:border-orange-300'
-                              }`}
-                            >
-                              {token.symbol}
-                            </button>
-                          ))}
+                          <button
+                            onClick={() => setSelectedToken('SOL')}
+                            className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                              selectedToken === 'SOL'
+                                ? 'bg-orange-600 text-white'
+                                : 'bg-white border-2 border-orange-200 text-orange-700 hover:border-orange-300'
+                            }`}
+                          >
+                            SOL
+                          </button>
+                          <button
+                            onClick={() => setSelectedToken('USDC')}
+                            className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                              selectedToken === 'USDC'
+                                ? 'bg-orange-600 text-white'
+                                : 'bg-white border-2 border-orange-200 text-orange-700 hover:border-orange-300'
+                            }`}
+                          >
+                            USDC
+                          </button>
                         </div>
                       </div>
                       
                       <p className="text-sm text-gray-600 text-center">Choose donation amount ({selectedToken})</p>
                       <div className="grid grid-cols-2 gap-3">
-                        {currentToken.defaultAmounts.map((amount, index) => (
+                        {donationAmounts.map((amount, index) => (
                           <button 
                             key={amount}
                             onClick={() => handleDonate(amount)}
