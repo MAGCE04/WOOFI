@@ -41,6 +41,9 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
     
     try {
       console.log(`Initiating donation of ${amount} ${selectedToken} to ${dog.name}`);
+      console.log('Donor wallet:', wallet.publicKey.toString());
+      console.log('Recipient wallet:', DONATION_CONFIG.recipientWallet);
+      console.log('Dog ID:', dog.id);
       
       const signature = await sendDonation(
         wallet,
@@ -50,10 +53,20 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
       );
       
       setTransactionSignature(signature);
-      console.log('Donation successful:', signature);
+      console.log('Donation successful! Transaction signature:', signature);
+      
+      // Optional: Show success message
+      alert(`Donation of ${amount} ${selectedToken} successful!\nTransaction: ${signature}`);
     } catch (err) {
       console.error('Donation failed:', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
+      
+      // Show user-friendly error
+      if (err instanceof Error && err.message.includes('insufficient funds')) {
+        setError('Insufficient funds in your wallet');
+      } else if (err instanceof Error && err.message.includes('User rejected')) {
+        setError('Transaction was cancelled');
+      }
     } finally {
       setIsProcessing(false);
     }
