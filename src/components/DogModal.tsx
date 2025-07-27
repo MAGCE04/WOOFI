@@ -15,6 +15,7 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
   const wallet = useWallet();
   const { connected } = wallet;
   const [selectedToken, setSelectedToken] = useState<'SOL' | 'USDC'>('SOL');
+  const [customAmount, setCustomAmount] = useState<string>('');
   const [isProcessing, setIsProcessing] = useState(false);
   const [transactionSignature, setTransactionSignature] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
