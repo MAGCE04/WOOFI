@@ -33,7 +33,18 @@ function App() {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-blue-50">
+          <div className="relative min-h-screen bg-gray-50">
+            {/* Fondo Woofi */}
+            <div
+              className="absolute inset-0 z-0 opacity-5 pointer-events-none"
+              style={{
+                backgroundImage: "url('/img/TEXTURAS-01.jpg')",
+                backgroundRepeat: "repeat",
+                backgroundSize: "300px",
+              }}
+            />
+
+            {/* Contenido principal */}
             <Header />
             <Dashboard />
           </div>

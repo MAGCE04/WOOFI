@@ -300,9 +300,16 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
                 <p className="text-blue-700 text-sm mb-4">
                   {dog.name} is looking for a loving forever home. Contact us to learn more about the adoption process.
                 </p>
-                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-200">
-                  Start Adoption Process
-                </button>
+                <a
+                href="https://docs.google.com/forms/d/1mp17DbKeLkbZixiIWPo2je0SFm1OOPVaDzYWBu57wA8/edit"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full block"
+                >
+                  <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all duration-200">
+                    Start Adoption Process
+                  </button>
+                </a>
               </div>
             </div>
           </div>
