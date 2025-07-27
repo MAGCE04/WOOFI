@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Dog } from '../types/dog';
 import { Plus, Edit, Trash2, Save, X } from 'lucide-react';
+import { addDog, updateDog, deleteDog } from "../services/firebaseDogsService";
+import { fetchDogs } from "../services/firebaseDogsService";
 
 interface AdminPanelProps {
   dogs: Dog[];
@@ -52,43 +54,59 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ dogs, onUpdateDogs }) =>
     setIsAddingNew(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    console.log("FormData para enviar:", formData);
     if (!formData.name || !formData.breed) return;
 
-    const newDog: Dog = {
-      id: editingDog?.id || Date.now().toString(),
+    const dogData: Omit<Dog, "id"> = {
       name: formData.name!,
       breed: formData.breed!,
-      age: formData.age!,
-      gender: formData.gender as 'Male' | 'Female',
-      size: formData.size as 'Small' | 'Medium' | 'Large',
+      age: Number(formData.age!),
+      gender: formData.gender as "Male" | "Female",
+      size: formData.size as "Small" | "Medium" | "Large",
       image: formData.image!,
       description: formData.description!,
-      personality: formData.personality!,
-      medicalHistory: formData.medicalHistory!,
-      adoptionStatus: formData.adoptionStatus as 'Available' | 'Pending' | 'Adopted',
-      dateArrived: formData.dateArrived!,
-      specialNeeds: formData.specialNeeds!,
+      personality: formData.personality || [],
+      medicalHistory: formData.medicalHistory || [],
+      adoptionStatus: formData.adoptionStatus as "Available" | "Pending" | "Adopted",
+      dateArrived: new Date(formData.dateArrived!).toISOString().split("T")[0],
+      specialNeeds: formData.specialNeeds || [],
     };
 
-    let updatedDogs;
-    if (editingDog) {
-      updatedDogs = dogs.map(dog => dog.id === editingDog.id ? newDog : dog);
-    } else {
-      updatedDogs = [...dogs, newDog];
-    }
+    try {
+      if (editingDog) {
+        await updateDog(editingDog.id, dogData);
+      } else {
+        await addDog(dogData);
+      }
 
-    onUpdateDogs(updatedDogs);
-    setEditingDog(null);
-    setIsAddingNew(false);
-  };
-
-  const handleDelete = (dogId: string) => {
-    if (confirm('Are you sure you want to delete this dog?')) {
-      const updatedDogs = dogs.filter(dog => dog.id !== dogId);
+      const updatedDogs = await fetchDogs();
       onUpdateDogs(updatedDogs);
+
+      alert("Perro guardado correctamente");
+      setEditingDog(null);
+      setIsAddingNew(false);
+    } catch (error) {
+      console.error("Error guardando perro:", error);
+      alert("Ocurrió un error al guardar");
     }
   };
+
+
+  const handleDelete = async (dogId: string) => {
+    if (confirm("Are you sure you want to delete this dog?")) {
+      try {
+        await deleteDog(dogId);
+        const updatedDogs = await fetchDogs();
+        onUpdateDogs(updatedDogs);
+        alert("Perro eliminado");
+      } catch (error) {
+        console.error("Error eliminando perro:", error);
+        alert("Error al eliminar");
+      }
+    }
+  };
+
 
   const handleArrayInput = (field: 'personality' | 'medicalHistory' | 'specialNeeds', value: string) => {
     const items = value.split(',').map(item => item.trim()).filter(item => item);
