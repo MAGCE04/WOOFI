@@ -5,7 +5,7 @@ export const DONATION_CONFIG = {
   recipientWallet: '6WnQ4hz6mhWrq3S1SHBbC23Qnouap1TRJPKeyztrgTQw',
   
   // Network configuration
-  network: 'devnet', // Change to 'mainnet-beta' for production
+  network: 'mainnet-beta', // Change to 'mainnet-beta' for production
     
   // Supported tokens
   tokens: {
