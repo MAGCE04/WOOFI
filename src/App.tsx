@@ -21,7 +21,7 @@ function App() {
     : WalletAdapterNetwork.Devnet;
   
   const endpoint = DONATION_CONFIG.network === 'mainnet-beta' 
-    ? 'https://api.mainnet-beta.solana.com'
+    ? 'https://mainnet.helius-rpc.com/?api-key=fcc672bb-d29e-4a0e-bc76-6575d71cbf97'
     : clusterApiUrl(network);
 
   const wallets = [

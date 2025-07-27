@@ -27,7 +27,7 @@ export async function sendDonation(
   }
 
   const endpoint = DONATION_CONFIG.network === 'mainnet-beta' 
-    ? 'https://api.mainnet-beta.solana.com'
+    ? 'https://mainnet.helius-rpc.com/?api-key=fcc672bb-d29e-4a0e-bc76-6575d71cbf97'
     : clusterApiUrl('devnet');
   const connection = new Connection(endpoint, 'confirmed');
   const recipientPublicKey = new PublicKey(DONATION_CONFIG.recipientWallet);
