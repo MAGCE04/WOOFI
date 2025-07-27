@@ -237,6 +237,34 @@ export const DogModal: React.FC<DogModalProps> = ({ dog, onClose }) => {
                         ))}
                       </div>
                       
+                      <div className="space-y-3">
+                        <p className="text-sm text-gray-600 text-center">Or enter custom amount</p>
+                        <div className="flex gap-2">
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0.01"
+                            placeholder={`Enter ${selectedToken} amount`}
+                            value={customAmount}
+                            onChange={(e) => setCustomAmount(e.target.value)}
+                            className="flex-1 px-3 py-2 border-2 border-orange-200 rounded-lg focus:border-orange-400 focus:outline-none"
+                          />
+                          <button
+                            onClick={() => {
+                              const amount = parseFloat(customAmount);
+                              if (amount > 0) {
+                                handleDonate(amount);
+                                setCustomAmount('');
+                              }
+                            }}
+                            disabled={isProcessing || !customAmount || parseFloat(customAmount) <= 0}
+                            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-all duration-200"
+                          >
+                            Donate
+                          </button>
+                        </div>
+                      </div>
+                      
                       {/* Transaction Result */}
                       {transactionSignature && (
                         <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
