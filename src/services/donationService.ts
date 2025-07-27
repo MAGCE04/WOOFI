@@ -26,8 +26,10 @@ export async function sendDonation(
     throw new Error('Wallet not connected');
   }
 
-  const network = DONATION_CONFIG.network === 'mainnet-beta' ? 'mainnet-beta' : 'devnet';
-  const connection = new Connection(clusterApiUrl(network), 'confirmed');
+  const endpoint = DONATION_CONFIG.network === 'mainnet-beta' 
+    ? 'https://api.mainnet-beta.solana.com'
+    : clusterApiUrl('devnet');
+  const connection = new Connection(endpoint, 'confirmed');
   const recipientPublicKey = new PublicKey(DONATION_CONFIG.recipientWallet);
 
   try {

@@ -20,7 +20,9 @@ function App() {
     ? WalletAdapterNetwork.Mainnet 
     : WalletAdapterNetwork.Devnet;
   
-  const endpoint = clusterApiUrl(network);
+  const endpoint = DONATION_CONFIG.network === 'mainnet-beta' 
+    ? 'https://api.mainnet-beta.solana.com'
+    : clusterApiUrl(network);
 
   const wallets = [
     new PhantomWalletAdapter(),
