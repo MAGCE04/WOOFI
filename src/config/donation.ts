@@ -2,7 +2,7 @@
 // Update this wallet address to specify where donations should be sent
 export const DONATION_CONFIG = {
   // Replace this with the actual wallet address where donations should go
-  recipientWallet: '6WnQ4hz6mhWrq3S1SHBbC23Qnouap1TRJPKeyztrgTQw',
+  recipientWallet: 'G9iZ5kqCkAAs2ZpoCNuWqGTUSQGq6zfUCK2JVyEq2tN',
   
   // Network configuration
   network: 'mainnet-beta', // Change to 'mainnet-beta' for production
