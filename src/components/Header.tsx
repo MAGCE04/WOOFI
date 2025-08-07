@@ -4,7 +4,8 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { DONATION_CONFIG } from '../config/donation';
 
 export const Header: React.FC = () => {
-  const isWalletConfigured = DONATION_CONFIG.recipientWallet !== 'YOUR_WALLET_ADDRESS_HERE';
+  const isWalletConfigured =
+    DONATION_CONFIG.recipientWallet !== 'YOUR_WALLET_ADDRESS_HERE';
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 z-10 relative">
@@ -39,8 +40,11 @@ export const Header: React.FC = () => {
               <Wallet className="w-4 h-4" />
               <span>Connect to donate with SOL</span>
             </div>
-            <div style={{ position: 'relative', zIndex: 9999 }}>
-              <WalletMultiButton className="!bg-orange-600 hover:!bg-orange-700 !text-sm" />
+            <div style={{ position: 'relative', zIndex: 99999 }}>
+              <WalletMultiButton
+                className="!bg-orange-600 hover:!bg-orange-700 !text-sm"
+                style={{ zIndex: 99999, position: 'relative' }}
+              />
             </div>
           </div>
         </div>
