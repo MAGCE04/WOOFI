@@ -36,7 +36,7 @@ export const Header: React.FC = () => {
             <div className="hidden md:flex items-center space-x-2 text-sm text-gray-600">
               <Wallet className="w-4 h-4" />
               <span>Connect to donate with SOL</span>
-            </div>
+            <div className="relative z-20">
             <WalletMultiButton className="!bg-orange-600 hover:!bg-orange-700 !text-sm" />
           </div>
         </div>
