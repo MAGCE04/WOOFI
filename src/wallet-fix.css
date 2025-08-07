@@ -1,0 +1,5 @@
+/* Forzar que el menú de la wallet esté encima de todo */
+.wallet-adapter-dropdown-list {
+  z-index: 999999 !important;
+  position: absolute !important;
+}
