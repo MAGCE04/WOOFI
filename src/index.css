@@ -7,3 +7,11 @@
 body {
   font-family: 'Shadows Into Light Two', cursive;
 }
+/* Ajuste para que el menú del WalletMultiButton no tape otros elementos */
+.wallet-adapter-dropdown-list {
+  z-index: 20 !important; /* menor que el z-index de tu dashboard */
+}
+
+.wallet-adapter-dropdown {
+  position: relative !important; /* que se posicione respecto al header */
+}
