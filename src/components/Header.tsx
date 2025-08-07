@@ -5,10 +5,10 @@ import { DONATION_CONFIG } from '../config/donation';
 
 export const Header: React.FC = () => {
   const isWalletConfigured =
-    DONATION_CONFIG.recipientWallet !== 'YOUR_WALLET_ADDRESS_HERE';
+    DONATION_CONFIG.recipientWallet !== 'G9iZ5kqCkAAs2ZpoCNuWqGTUSQGq6zfUCK2JVyEq2tN';
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 z-10 relative">
+    <header className="bg-white shadow-sm border-b border-gray-200 z-9999 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo y título */}
