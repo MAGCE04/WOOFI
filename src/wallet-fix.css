@@ -1,14 +1,5 @@
-.wallet-adapter-dropdown,
+/* Solo el dropdown, no el botón */
 .wallet-adapter-dropdown-list {
-  position: relative !important;
   z-index: 999999 !important;
-}
-
-.wallet-adapter-button,
-.wallet-adapter-button-trigger {
-  z-index: 999999 !important;
-}
-
-.wallet-adapter-modal {
-  z-index: 999999 !important;
+  position: absolute !important;
 }
