@@ -9,6 +9,7 @@ import {
   SolflareWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import './wallet-fix.css';
 import { clusterApiUrl } from '@solana/web3.js';
 import { Header } from './components/Header';
 import { Dashboard } from './components/Dashboard';
